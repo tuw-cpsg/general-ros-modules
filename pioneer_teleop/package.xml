@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package>
+  <name>pioneer_teleop</name>
+  <version>0.0.1</version>
+  <description>The pioneer_teleop package</description>
+
+  <maintainer email="denise.ratasich@gmx.at">Denise Ratasich</maintainer>
+  <license>BSD</license>
+  <author email="denise.ratasich@gmx.at">Denise Ratasich</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>roscpp</run_depend>
+</package>

@@ -1,0 +1,6 @@
+<launch>
+  <node name="pioneer_teleop_keyboard" 
+	pkg="pioneer_teleop" 
+	type="keyboard"
+	output="screen" />
+</launch>

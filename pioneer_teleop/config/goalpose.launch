@@ -1,0 +1,16 @@
+<launch>
+  <!-- declare args to be passed in -->
+  <arg name="interactive" default="false" />
+  <arg name="x" default="" />
+  <arg name="y" default="" />
+  <arg name="w" default="" />
+ 
+  <!-- set flags according to specific launch-arguments -->
+  <arg name="iflag" if="$(arg interactive)" value="-i" />
+
+  <node name="pioneer_teleop_goalpose" 
+	pkg="pioneer_teleop" 
+	type="goalpose"
+	output="screen"
+	args="$(arg iflag) $(arg x) $(arg y) $(arg w)" />
+</launch>
