@@ -1,0 +1,27 @@
+*~
+~*
+*.swp
+*#
+#*
+*.log
+*.d
+*.orig
+
+# ROS workspace
+*.o
+*.a
+*.d
+*.so
+*.lo
+*.la
+*.gcda
+*.gcno
+*.gcov
+*.pyc
+build/
+devel/
+install/
+
+.hg*
+.hg*/
+

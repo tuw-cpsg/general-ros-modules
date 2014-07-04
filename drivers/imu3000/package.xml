@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+  <name>imu3000</name>
+  <version>0.9.0</version>
+  <description>Driver for IMU-3000 (gyroscope).</description>
+
+  <maintainer email="e0826389@student.tuwien.ac.at">Denise Ratasich</maintainer>
+  <license>BSD</license>
+  <author email="e0826389@student.tuwien.ac.at">Denise Ratasich</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <run_depend>roscpp</run_depend>
+</package>

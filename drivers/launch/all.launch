@@ -1,0 +1,17 @@
+<launch>
+
+  <!-- params -->
+  <param name="imu3000/pub_rate" value="100" />
+  <param name="kxtf9/pub_rate" value="100" />
+  <param name="kxtf9/output_data_rate" value="400" />
+
+  <!-- launch all drivers -->
+
+  <node name="imu3000" pkg="imu3000" type="imu3000"
+  	output="screen" >
+  </node>
+  <node name="kxtf9" pkg="kxtf9" type="kxtf9"
+  	output="screen" >
+  </node>
+
+</launch>
