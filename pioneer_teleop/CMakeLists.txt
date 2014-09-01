@@ -3,6 +3,7 @@ project(pioneer_teleop)
 
 ## Find catkin and any catkin packages
 find_package(catkin REQUIRED COMPONENTS geometry_msgs roscpp)
+find_package(Boost REQUIRED COMPONENTS thread)
 
 ###################################
 ## catkin specific configuration ##
