@@ -42,14 +42,19 @@ int pub_period_ms = 500;
  * exchange.
  */
 class MutexedData {
-  boost::mutex mtx_;
-  geometry_msgs::Twist twist_;
+  boost::mutex mtx_;			// for mutual exclusion
+  geometry_msgs::Twist twist_;		// the data to send
+  ros::Publisher pub_cmdVel_;		// the publisher (thread is also able to publish)
   int running_;
 public:
-  MutexedData() {
+  void init(ros::NodeHandle& n) {
     twist_.linear.x = 0;
     twist_.angular.z = 0;
+    pub_cmdVel_ = n.advertise < geometry_msgs::Twist > ("cmd_vel", MSG_BUFFER_SIZE);
     running_ = 0;
+  }
+  void shutdown() {
+    pub_cmdVel_.shutdown();
   }
   void setTwist(geometry_msgs::Twist& twist) {
     mtx_.lock();
@@ -71,12 +76,26 @@ public:
     mtx_.unlock();
     return twist;
   }
+  void publish() {
+    mtx_.lock();
+    pub_cmdVel_.publish(twist_);
+    ROS_DEBUG("%.2f m/s, %.2f degree", twist_.linear.x, twist_.angular.z);
+    mtx_.unlock();
+  }
+  void publish(float lin, float ang) {
+    mtx_.lock();
+    twist_.linear.x = lin;
+    twist_.angular.z = ang;
+    pub_cmdVel_.publish(twist_);
+    ROS_DEBUG("%.2f m/s, %.2f degree", twist_.linear.x, twist_.angular.z);
+    mtx_.unlock();
+  }
   void setRunning(int running) {
     mtx_.lock();
     running_ = running;
     mtx_.unlock();
   }
-  int getRunning() {
+  int isRunning() {
     int r;
     mtx_.lock();
     r = running_;
@@ -120,8 +139,9 @@ int main(int argc, char **argv)
   // Note, how to terminate this node!
   ROS_WARN("This node can only be terminated by pressing 'q'.");
 
-  // Tell ROS that we want to publish on the topic cmd_vel (for steering the robot).
-  ros::Publisher pub_cmdVel = n.advertise < geometry_msgs::Twist > ("cmd_vel", MSG_BUFFER_SIZE);
+  // Initialize data and tell ROS that we want to publish on the topic
+  // cmd_vel (for steering the robot).
+  mtxData.init(n);
 
   // Wait a little bit to be sure that the connection is established.
   ros::Duration duration(0.5);
@@ -129,18 +149,15 @@ int main(int argc, char **argv)
   duration.sec = 0;
   duration.nsec = pub_period_ms * 1e6;
 
-  // Start thread to read from keyboard, updates mtxTwist if a key is
+  // Start thread to read from keyboard, updates mtxData if a key is
   // pressed.
   boost::thread keyboardThread(getTwistFromKeyboard);
   mtxData.setRunning(1);	// set running flag of the thread
-  geometry_msgs::Twist twist;	// only local variable
 
-  while (ros::ok() && mtxData.getRunning())
+  while (ros::ok() && mtxData.isRunning())
   {
-    // Send message.
-    twist = mtxData.getTwist();
-    pub_cmdVel.publish(twist);
-    ROS_DEBUG("%.2f m/s, %.2f degree", twist.linear.x, twist.angular.z);
+    // Send message periodically.
+    mtxData.publish();
 
     // Handle callbacks if any.
     ros::spinOnce();
@@ -149,18 +166,16 @@ int main(int argc, char **argv)
     duration.sleep();
   }
 
-  if (mtxData.getRunning())
+  if (mtxData.isRunning())
     ROS_ERROR("Ctrl-C received. Press 'q' to quit the node!");
   keyboardThread.join();
 
   // Send "stop" for robot.
-  twist.linear.x = 0;
-  twist.angular.z = 0;
-  pub_cmdVel.publish(twist);
+  mtxData.publish(0,0);
   ROS_INFO("Robot stopped.");
 
   // Close connections.
-  pub_cmdVel.shutdown();
+  mtxData.shutdown();
   ROS_INFO("Closed connection.");
 
   // Restore old terminal settings.
@@ -169,6 +184,10 @@ int main(int argc, char **argv)
   return 0;
 }
 
+/**
+ * @brief Fetches available params from the parameter server and
+ * configures this node.
+ */
 void applyParameters(ros::NodeHandle& n)
 {
   // ROS params ---
@@ -241,6 +260,6 @@ void getTwistFromKeyboard()
       run = 0;			// leave loop and terminate this thread
     }
 
-    mtxData.setTwist(speed_lin * SCALE_TRANSLATION, speed_ang * SCALE_ROTATION);
+    mtxData.publish(speed_lin * SCALE_TRANSLATION, speed_ang * SCALE_ROTATION);
   }
 }
