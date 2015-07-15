@@ -42,7 +42,7 @@ typedef enum {
 /** File descriptor of UART interface. */
 static int fd = -1;
 
-/**< Publishing rate, default: 10Hz. */
+/** Publishing rate, default: 10Hz. */
 static int pub_rate = 10;
 
 /**
