@@ -4,7 +4,6 @@ project(uc)
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS 
   roscpp 
-  std_msgs
   additional_msgs
   )
 find_library(wiringPi wiringPi)

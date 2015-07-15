@@ -3,16 +3,21 @@
  * @author Denise Ratasich
  * @date 06.07.2015
  *
- * @brief Samples battery sensors and publishes readings.
+ * @brief Receives ADC values from uC and publishes readings.
  *
  * subscribe: none
+ *
  * publish:
- * - am_battery [std_msgs/Float32] (current consumed by the battery in
- *     Ampere, positive when charging, negative when load is attached)
+ * - adc_voltage [additional_msgs/Float32MultiArrayStamped] (voltage
+ *   measured at the ADC inputs of the controller)
+ *
+ * parameters:
+ * - ~pub_rate The publishing rate of ADC values. Default value is
+ *   10Hz.
  **/
 
 #include "ros/ros.h"
-#include "additional_msgs/Float32Stamped.h"
+#include "additional_msgs/Float32MultiArrayStamped.h"
 
 #include <wiringPi.h>
 #include <wiringSerial.h>
@@ -21,6 +26,9 @@
 
 #define START_C	'S'
 #define END_C	'E'
+
+/** ATmega328P-28PDIP has 6 ADC inputs. */
+#define ADC_VOLTAGE_NUM	6
 
 typedef enum {
   START,
@@ -31,14 +39,32 @@ typedef enum {
   ERROR
 } uart_state_t;
 
-/** Sensor values which should be received. */
-enum sensor {
-  AM_BATTERY,
-  NUM_SENSORS
-};
-
 /** File descriptor of UART interface. */
 static int fd = -1;
+
+/**< Publishing rate, default: 10Hz. */
+static int pub_rate = 10;
+
+/**
+ * @brief Checks whether the user has set parameters over the
+ * parameter server, changes the defaults if any.
+ */
+void applyParameters (void)
+{
+  // check for parameters (e.g. I2C settings)
+  ros::NodeHandle n_("~");
+
+  // ROS params ---
+  if (n_.hasParam("pub_rate"))
+  {
+    n_.getParam("pub_rate", pub_rate);
+    ROS_INFO("Publishing rate set to %d Hz.", pub_rate);
+  }
+  else
+  {
+    ROS_INFO("Publishing rate set to default %d Hz.", pub_rate);
+  }
+}
 
 /** Entry point. */
 int main(int argc, char **argv)
@@ -46,18 +72,24 @@ int main(int argc, char **argv)
   uart_state_t state = START;
   uint8_t len;
   uint8_t sensor;
-  uint16_t adcs[NUM_SENSORS];
+  uint16_t adcs[ADC_VOLTAGE_NUM];
   uint32_t count = 0;
 
   try {
     // set up ROS
     ros::init(argc, argv, "uc");
+    if (ros::this_node::getNamespace() == "/")
+      ROS_WARN("Started in the global namespace.");
+
+    applyParameters();
+
     ros::NodeHandle n("~");
 
-    ros::Publisher am_battery_pub = n.advertise<uc::Float32Stamped>("am_battery", 1);
-    uc::Float32Stamped am_battery_msg;
-
-    ros::Rate loop_rate(1);
+    // ROS communication
+    ros::Publisher adc_voltage_pub = n.advertise<additional_msgs::Float32MultiArrayStamped>("adc_voltage", 1);
+    additional_msgs::Float32MultiArrayStamped adc_voltage_msg;
+    adc_voltage_msg.layout.data_offset = 0;
+    ros::Rate loop_rate(pub_rate);
 
     ROS_INFO("Initialization done.");
 
@@ -84,8 +116,8 @@ int main(int argc, char **argv)
       case LEN:
 	// read number of data bytes
 	len = c;
-	if (len != NUM_SENSORS*2) {
-	  ROS_WARN("Length of data not expected. Abort message receive.");
+	if (len >= ADC_VOLTAGE_NUM*2) {
+	  ROS_WARN("Unexpected length of data. Abort message receive.");
 	  state = ERROR;
 	} else {
 	  sensor = 0;
@@ -113,16 +145,14 @@ int main(int argc, char **argv)
 	  ROS_WARN("No end of message detected.");
 
 	// do something with message -> publish to ROS
-	am_battery_msg.header.seq = count;
-	am_battery_msg.header.stamp = ros::Time::now();
-	// Vin = ADC * 3.3 / 1024;
-	// 0A ... Vin - Vcc/2; 122mV / 1A
-	am_battery_msg.data = (((float)adcs[AM_BATTERY]) * 3.3 / 1024 - 3.3/2) / 0.122;
-
-	am_battery_pub.publish(am_battery_msg);
-	count++;
-
-	ROS_DEBUG_STREAM("am_battery: " << am_battery_msg.data);
+	adc_voltage_msg.header.stamp = ros::Time::now();
+	adc_voltage_msg.data.clear();
+	for (int i = 0; i < len/2; i++) {
+	  // Vin = ADC * 3.3 / 1024;
+	  float vin = ((float)adcs[i]) * 3.3 / 1024;
+	  adc_voltage_msg.data.push_back(vin);
+	}
+	adc_voltage_pub.publish(adc_voltage_msg);
 
 	loop_rate.sleep();
 

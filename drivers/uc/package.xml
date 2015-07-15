@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>uc</name>
-  <version>0.9.0</version>
+  <version>1.0.0</version>
   <description>Driver for ATmega328P on Gertboard.</description>
 
   <maintainer email="denise@vmars.tuwien.ac.at">Denise Ratasich</maintainer>
@@ -10,9 +10,7 @@
   
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
-  <build_depend>std_msgs</build_depend>
   <build_depend>additional_msgs</build_depend>
   <run_depend>roscpp</run_depend>
-  <run_depend>std_msgs</run_depend>
   <run_depend>additional_msgs</run_depend>
 </package>

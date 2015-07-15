@@ -16,12 +16,9 @@
 #include "uart.h"
 
 /** Sensors connected to ADC channels. */
-enum sensor {
-  AM_BATTERY,
-  NUM_SENSORS
-};
+#define ADC_INPUTS_NUM 1
 
-uint16_t adcs[NUM_SENSORS];
+uint16_t adcs[ADC_INPUTS_NUM];
 
 /** Entry point of program. */
 int main(void)
@@ -35,14 +32,14 @@ int main(void)
   
   while (1) {
     // sample adc values
-    for (i = 0; i < NUM_SENSORS; i++) {
+    for (i = 0; i < ADC_INPUTS_NUM; i++) {
       adcs[i] = adc_value(i);
     }
 
     // send sensor values
     uart_putc_b('S'); // start signal
-    uart_putc_b(NUM_SENSORS*2); // number of bytes to send
-    for (i = 0; i < NUM_SENSORS; i++) {
+    uart_putc_b(ADC_INPUTS_NUM*2); // number of bytes to send
+    for (i = 0; i < ADC_INPUTS_NUM; i++) {
       uart_putc_b(adcs[i]>>8);
       uart_putc_b(adcs[i]);
     }
