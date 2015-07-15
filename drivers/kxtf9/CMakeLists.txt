@@ -3,7 +3,8 @@ project(kxtf9)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs)
-link_directories(/usr/local/lib)
+find_library(wiringPi wiringPi)
+#link_directories(/usr/local/lib)
 
 ###################################
 ## catkin specific configuration ##
@@ -25,20 +26,22 @@ catkin_package(
 ## Build ##
 ###########
 
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-)
+# build only when wiringPi lib is present (only on RaspberryPi)
+if (wiringPi)
+  ## Specify additional locations of header files
+  include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+    )
 
-## Declare a cpp executable
-add_executable(kxtf9 src/kxtf9.cpp)
+  ## Declare a cpp executable
+  add_executable(kxtf9 src/kxtf9.cpp)
 
-## Add cmake target dependencies of the executable/library
-## as an example, message headers may need to be generated before nodes
-# add_dependencies(kxtf9 kxtf9_generate_messages_cpp)
-
-## Specify libraries to link a library or executable target against
-target_link_libraries(kxtf9
-  wiringPi
-  ${catkin_LIBRARIES}
-)
+  ## Specify libraries to link a library or executable target against
+  target_link_libraries(kxtf9
+    wiringPi
+    ${catkin_LIBRARIES}
+    )
+else (wiringPi)
+  message(WARNING "wiringPi library not found. kxtf9 not built.")
+endif (wiringPi)

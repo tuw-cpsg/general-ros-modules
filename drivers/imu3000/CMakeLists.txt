@@ -3,7 +3,8 @@ project(imu3000)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS roscpp geometry_msgs)
-link_directories(/usr/local/lib)
+find_library(wiringPi wiringPi)
+#link_directories(/usr/local/lib)
 
 ###################################
 ## catkin specific configuration ##
@@ -25,16 +26,22 @@ catkin_package(
 ## Build ##
 ###########
 
-include_directories(
-  include
-  ${catkin_INCLUDE_DIRS}
-)
+# build only when wiringPi lib is present (only on RaspberryPi)
+if (wiringPi)
+  ## Specify additional locations of header files
+  include_directories(
+    include
+    ${catkin_INCLUDE_DIRS}
+    )
 
-## Declare a cpp executable
-add_executable(imu3000 src/imu3000.cpp)
+  ## Declare a cpp executable
+  add_executable(imu3000 src/imu3000.cpp)
 
-## Specify libraries to link a library or executable target against
-target_link_libraries(imu3000
-  wiringPi
-  ${catkin_LIBRARIES}
-)
+  ## Specify libraries to link a library or executable target against
+  target_link_libraries(imu3000
+    wiringPi
+    ${catkin_LIBRARIES}
+    )
+else (wiringPi)
+  message(WARNING "wiringPi library not found. imu3000 not built.")
+endif (wiringPi)
