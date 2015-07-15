@@ -31,9 +31,3 @@ include_directories(
 ## cpp executables and libs
 add_executable(keyboard src/keyboard.cpp)
 target_link_libraries(keyboard ${catkin_LIBRARIES})
-
-add_executable(twistfortime src/twistfortime.cpp)
-target_link_libraries(twistfortime ${catkin_LIBRARIES})
-
-add_executable(goalpose src/goalpose.cpp)
-target_link_libraries(goalpose ${catkin_LIBRARIES})

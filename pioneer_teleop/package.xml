@@ -1,12 +1,15 @@
 <?xml version="1.0"?>
 <package>
   <name>pioneer_teleop</name>
-  <version>0.0.1</version>
-  <description>The pioneer_teleop package</description>
+  <version>0.1.0</version>
+  <description>
+    teleop package for controlling a robot (pioneer). Works with p2os
+    and rosaria driver.
+  </description>
 
-  <maintainer email="denise.ratasich@gmx.at">Denise Ratasich</maintainer>
+  <maintainer email="denise@vmars.tuwien.ac.at">Denise Ratasich</maintainer>
   <license>BSD</license>
-  <author email="denise.ratasich@gmx.at">Denise Ratasich</author>
+  <author email="denise@vmars.tuwien.ac.at">Denise Ratasich</author>
 
   <buildtool_depend>catkin</buildtool_depend>
 

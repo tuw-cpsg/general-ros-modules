@@ -1,6 +1,0 @@
-<launch>
-  <node name="move_base_simple" 
-	pkg="move_base_simple" 
-	type="move_base_simple"
-	output="screen" />
-</launch>
