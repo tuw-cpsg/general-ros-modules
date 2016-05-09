@@ -8,7 +8,7 @@
   </description>
 
   <maintainer email="denise@vmars.tuwien.ac.at">Denise Ratasich</maintainer>
-  <license>BSD</license>
+  <license>MIT</license>
   <author email="denise@vmars.tuwien.ac.at">Denise Ratasich</author>
 
   <buildtool_depend>catkin</buildtool_depend>

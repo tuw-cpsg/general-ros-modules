@@ -5,7 +5,7 @@
   <description>Driver for KXTF9 (accelerometer)</description>
 
   <maintainer email="e0826389@student.tuwien.ac.at">Denise Ratasich</maintainer>
-  <license>BSD</license>
+  <license>MIT</license>
   <author email="e0826389@student.tuwien.ac.at">Denise Ratasich</author>
 
   <buildtool_depend>catkin</buildtool_depend>
