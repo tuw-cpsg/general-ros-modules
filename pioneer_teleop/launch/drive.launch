@@ -1,0 +1,35 @@
+<launch>
+  <!-- hostname of your notebook -->
+  <arg name="notebook" default="notebook" />
+  <!-- default hostname of the robot -->
+  <arg name="robot" default="seco-gpu-devkit" />
+  <!-- ROS distro that should be initialized on the rover -->
+  <arg name="robot-distro" default="groovy" />
+  <!-- robot's interface to arcos (firmware/driver for motors) -->
+  <arg name="robot-port" default="/dev/ttyUSB0" />
+
+  <!-- machines -->
+  <machine name="notebook" address="$(arg notebook)" default="true" />
+  <machine name="robot" address="$(arg robot)"
+	   env-loader="/opt/ros/$(arg robot-distro)/env.sh" />
+
+  <!-- remappings (it does not work inside node) -->
+  <remap from="/p2os/cmd_vel" to="/teleop/cmd_vel" />
+
+  <!-- nodes running on the gpu-board -->
+  <node machine="robot" ns="p2os" name="p2os_driver"
+	pkg="p2os_driver" type="p2os_driver"
+	output="screen">
+    <param name="port" value="$(arg robot-port)" /> <!-- interface to arcos -->
+    <param name="pulse" value="1.0" /> <!-- turn annoying beep of -->
+  </node>
+
+  <!-- nodes running on the notebook -->
+  <node name="teleop" pkg="pioneer_teleop" type="keyboard" output="screen" />
+
+  <!-- enable motors (this node will quit after 3s) -->
+  <node name="rostopic_pub_enable_motors"
+	pkg="rostopic" type="rostopic"
+	args="pub /p2os/cmd_motor_state p2os_msgs/MotorState 1 -1" />
+
+</launch>
