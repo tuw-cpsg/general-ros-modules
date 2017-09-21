@@ -2,7 +2,7 @@
  * @file imu3000.cpp
  * @date 28.10.2013
  * @author Denise Ratasich
- * 
+ *
  * @brief ROS node reading and publishing the sensor values of
  * IMU3000, a 3-axis gyroscope.
  *
@@ -71,7 +71,7 @@ static double offs_x = 0, offs_y = 0, offs_z = 0;
 
 /**
  * @brief Calibrates the gyroscope, i.e. computes the offset.
- * 
+ *
  * The mean of 50 samples is taken to calculate the average of the
  * neutral position, which should be x = 0, y = 0, z = 0, i.e. no
  * rotation.
@@ -139,11 +139,11 @@ void applyParameters (void)
   // bias for gyro-values (should be used when this node isn't started
   // in neutral position (x,y,z)=(0,0,0), e.g. when the robot is
   // already driving)
-  if (n_.hasParam("offs_x") &&  
+  if (n_.hasParam("offs_x") &&
       n_.hasParam("offs_y") &&
       n_.hasParam("offs_z"))
   {
-    ROS_INFO("Offsets taken from parameters.", pub_rate);
+    ROS_INFO("Offsets taken from parameters.");
     n_.getParam("offs_x", offs_x);
     n_.getParam("offs_y", offs_y);
     n_.getParam("offs_z", offs_z);
@@ -188,8 +188,8 @@ void init (void)
     n.getParam("i2c_address", paramAddr);
     address = (uint8_t) paramAddr;
     ROS_INFO("I2C address of IMU-3000 set to 0x%02X.", address);
-  } 
-  else 
+  }
+  else
   {
     ROS_INFO("I2C address of IMU-3000 set to default 0x%02X.", address);
   }
@@ -228,7 +228,7 @@ int main (int argc, char** argv)
     }
 
     ROS_INFO("IMU-3000 connected.");
-    
+
     // ROS communication
     ros::NodeHandle n("~");
     ros::Publisher publisher = n.advertise<geometry_msgs::Vector3Stamped>("angular_velocity", 1);
@@ -279,7 +279,7 @@ int main (int argc, char** argv)
     ROS_ERROR_STREAM("Unhandled exception reached the top of main: "
 		     << e.what() << " Application will now exit." << endl);
     return 1;
-  }  
+  }
 
   ROS_INFO("Exit.");
   return 0;

@@ -2,7 +2,7 @@
  * @file kxtf9.cpp
  * @date 30.10.2013
  * @author Denise Ratasich
- * 
+ *
  * @brief ROS node reading and publishing the sensor values of KXTF9,
  * a 3-axis accelerometer.
  *
@@ -52,8 +52,8 @@ using namespace std;
 
 #include <ros/ros.h>
 #include <geometry_msgs/Vector3Stamped.h>	// message type for sensor values
-		
-// include the register definition of the accelerometer		       
+
+// include the register definition of the accelerometer
 #include "regKXTF9.h"
 
 #define GRAVITY		(9.81)
@@ -75,7 +75,7 @@ static double offs_x = 0, offs_y = 0, offs_z = 0;
 
 /**
  * @brief Calibrates the accelerometer, i.e. computes the offset.
- * 
+ *
  * The mean of 50 samples is taken to calculate the average of the
  * neutral position, which should be x = 0, y = 0, z = 1g (earth's
  * gravitation).
@@ -130,7 +130,7 @@ void applyHardwareParameters (void)
 {
   // check for parameters
   ros::NodeHandle n_("~");
-  
+
   // update cycle of the acceleration data in the KXTF9 registers
   int odr = 200;	// default
   if (n_.hasParam("output_data_rate"))
@@ -155,7 +155,7 @@ void applyHardwareParameters (void)
   case 800: dcr = ODR_800; break;
   default: dcr = ODR_200; break;
   }
-  
+
   // set output data rate
   if (wiringPiI2CWriteReg8 (fd, DATA_CTRL_REG, dcr) == -1)
     ROS_WARN_STREAM("Setting output data rate of KXTF9 failed. " << string(strerror(errno)));
@@ -192,15 +192,15 @@ void applyOtherParameters (void)
     ROS_INFO_STREAM("Frame ID set to '" << frame_id << "'.");
   }
 
-  // other configs --- 
+  // other configs ---
 
   // bias for acc-values (should be used when this node isn't started
   // in neutral position (x,y,z)=(0,0,1g))
-  if (n_.hasParam("offs_x") &&  
+  if (n_.hasParam("offs_x") &&
       n_.hasParam("offs_y") &&
       n_.hasParam("offs_z"))
   {
-    ROS_INFO("Offsets taken from parameters.", pub_rate);
+    ROS_INFO("Offsets taken from parameters.");
     n_.getParam("offs_x", offs_x);
     n_.getParam("offs_y", offs_y);
     n_.getParam("offs_z", offs_z);
@@ -271,7 +271,7 @@ int main (int argc, char** argv)
     }
 
     ROS_INFO("KXTF9 connected.");
-    
+
     // ROS communication
     ros::NodeHandle n("~");
     ros::Publisher publisher = n.advertise<geometry_msgs::Vector3Stamped>("acceleration", 1);

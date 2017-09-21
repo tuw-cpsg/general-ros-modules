@@ -7,7 +7,7 @@
   <maintainer email="denise@vmars.tuwien.ac.at">Denise Ratasich</maintainer>
   <license>MIT</license>
   <author email="denise@vmars.tuwien.ac.at">Denise Ratasich</author>
-  
+
   <buildtool_depend>catkin</buildtool_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>additional_msgs</build_depend>

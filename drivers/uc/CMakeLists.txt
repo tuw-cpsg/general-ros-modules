@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 2.8.3)
 project(uc)
 
 ## Find catkin macros and libraries
-find_package(catkin REQUIRED COMPONENTS 
-  roscpp 
+find_package(catkin REQUIRED COMPONENTS
+  roscpp
   additional_msgs
   )
 find_library(wiringPi wiringPi)
@@ -44,6 +44,10 @@ if (wiringPi)
     wiringPi
     ${catkin_LIBRARIES}
     )
+
+  ## additional_msgs must be build first
+  ## depend on 'additional_msgs_generate_messages_cpp' didn't work
+  add_dependencies(uc_node ${catkin_EXPORTED_TARGETS})
 else (wiringPi)
   message(WARNING "wiringPi library not found. uc not built.")
 endif (wiringPi)
