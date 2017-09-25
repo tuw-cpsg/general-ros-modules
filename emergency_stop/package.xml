@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package>
+  <name>emergency_stop</name>
+  <version>0.0.1</version>
+  <description>emergency_stop</description>
+
+  <maintainer email="denise@cps.tuwien.ac.at">Denise Ratasich</maintainer>
+  <license>MIT</license>
+  <author email="denise@cps.tuwien.ac.at">Denise Ratasich</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <run_depend>additional_msgs</run_depend>
+  <run_depend>geometry_msgs</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+</package>
