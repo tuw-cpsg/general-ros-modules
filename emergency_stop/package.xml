@@ -9,7 +9,7 @@
   <author email="denise@cps.tuwien.ac.at">Denise Ratasich</author>
 
   <buildtool_depend>catkin</buildtool_depend>
-  <run_depend>additional_msgs</run_depend>
-  <run_depend>geometry_msgs</run_depend>
-  <run_depend>sensor_msgs</run_depend>
+  <build_depend>additional_msgs</build_depend>
+  <build_depend>geometry_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
 </package>
