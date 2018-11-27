@@ -16,6 +16,7 @@ add_message_files(
   FILES
   Float32Stamped.msg
   Float32MultiArrayStamped.msg
+  Float32WithVarianceStamped.msg
   Float64Stamped.msg
 )
 
