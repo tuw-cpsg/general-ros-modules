@@ -1,0 +1,6 @@
+<launch>
+  <node name="wanderer"
+	pkg="wanderer"
+	type="wanderer.py"
+	output="screen" />
+</launch>
