@@ -27,9 +27,14 @@ class Wanderer(object):
         rospy.loginfo("{}: initialized".format(_node_name))
         # timeout for laser data
         self.__watchdog_timeout = timeout
+        # params (velocity)
+        self.__v = rospy.get_param('~linear_velocity', 0.1)
+        self.__w = rospy.get_param('~angular_velocity', 0.3)
+        rospy.loginfo("{}: lin vel = {}, ang vel = {}".format(_node_name,
+            self.__v, self.__w))
         # params (minimum distance hysteresis)
-        self.__dsafe_bot = rospy.get_param('~dsafe_bottom', 0.5)
-        self.__dsafe_top = rospy.get_param('~dsafe_top', 0.6)
+        self.__dsafe_bot = rospy.get_param('~dturn_bottom', 0.5)
+        self.__dsafe_top = rospy.get_param('~dturn_top', 0.6)
         rospy.loginfo("{}: safe bot = {}, safe top = {}".format(_node_name,
             self.__dsafe_bot, self.__dsafe_top))
         # publish/subscribe
@@ -55,12 +60,12 @@ class Wanderer(object):
             msgtosend.angular.z = 0.0
         elif self.__state == 'turn left':
             msgtosend.linear.x = 0.0
-            msgtosend.angular.z = 0.3
+            msgtosend.angular.z = self.__w
         elif self.__state == 'turn right':
             msgtosend.linear.x = 0.0
-            msgtosend.angular.z = -0.3
+            msgtosend.angular.z = -self.__w
         elif self.__state == 'forward':
-            msgtosend.linear.x = 0.1
+            msgtosend.linear.x = self.__v
             msgtosend.angular.z = 0.0
         else:
             rospy.logerr("{}: reached wrong state: '{}'".format(_node_name,

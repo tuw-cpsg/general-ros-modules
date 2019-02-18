@@ -1,6 +1,14 @@
 <launch>
-  <node name="wanderer"
-	pkg="wanderer"
-	type="wanderer.py"
-	output="screen" />
+  <arg name="linear_velocity" default="0.1"/>
+  <arg name="angular_velocity" default="0.3"/>
+  <arg name="dturn_bottom" default="0.5"/>
+  <arg name="dturn_top" default="0.6"/>
+
+  <node name="wanderer"	pkg="wanderer"type="wanderer.py"
+	output="screen">
+    <param name="linear_velocity" value="$(arg linear_velocity)" />
+    <param name="angular_velocity" value="$(arg angular_velocity)" />
+    <param name="dturn_bottom" value="$(arg dturn_bottom)" />
+    <param name="dturn_top" value="$(arg dturn_top)" />
+  </node>
 </launch>
