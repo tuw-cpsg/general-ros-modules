@@ -2,11 +2,11 @@
   <!-- hostname of your notebook -->
   <arg name="notebook" default="notebook" />
   <!-- default hostname of the robot -->
-  <arg name="robot" default="seco-gpu-devkit" />
+  <arg name="robot" default="daisy" />
   <!-- ROS distro that should be initialized on the rover -->
-  <arg name="robot-distro" default="groovy" />
+  <arg name="robot-distro" default="indigo" />
   <!-- robot's interface to arcos (firmware/driver for motors) -->
-  <arg name="robot-port" default="/dev/ttyUSB0" />
+  <arg name="robot-port" default="/dev/ttyTHS1" />
 
   <!-- machines -->
   <machine name="notebook" address="$(arg notebook)" default="true" />
