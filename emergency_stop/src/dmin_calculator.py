@@ -25,7 +25,7 @@ def callback_laser(msg):
     dmin = min(msg.ranges)
     rospy.logdebug("received laser scan, dmin: %f", dmin)
     msgtosend = Float32Stamped()
-    msgtosend.header.stamp = rospy.Time.now()
+    msgtosend.header.stamp = msg.header.stamp  # keep timestamp of laser scan
     msgtosend.data = dmin
     _pub.publish(msgtosend)
 
