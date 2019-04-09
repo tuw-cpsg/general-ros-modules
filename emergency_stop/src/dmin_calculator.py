@@ -22,7 +22,10 @@ _pub = None
 def callback_laser(msg):
     """Called when a message of the topic 'scan' is received."""
     global _pub
-    dmin = min(msg.ranges)
+    ranges = msg.ranges
+    if len(msg.intensities) > 0:
+        ranges = [r for i, r in enumerate(msg.ranges) if msg.intensities[i] > 0]
+    dmin = min(ranges)
     rospy.logdebug("received laser scan, dmin: %f", dmin)
     msgtosend = Float32Stamped()
     msgtosend.header.stamp = msg.header.stamp  # keep timestamp of laser scan
