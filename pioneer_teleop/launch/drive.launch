@@ -11,7 +11,7 @@
   <!-- machines -->
   <machine name="notebook" address="$(arg notebook)" default="true" />
   <machine name="robot" address="$(arg robot)"
-	   env-loader="/opt/ros/$(arg robot-distro)/env.sh" />
+	   env-loader="/home/pi/env.bash" />
 
   <!-- remappings (it does not work inside node) -->
   <remap from="/p2os/cmd_vel" to="/teleop/cmd_vel" />
